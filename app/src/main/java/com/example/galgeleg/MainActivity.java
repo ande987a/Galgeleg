@@ -1,5 +1,6 @@
 package com.example.galgeleg;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         wrongLetterText = findViewById(R.id.wrongLetter);
         wordToGuess = findViewById(R.id.word);
+        //TODO Flyt updateScreen i bunden af onCreate så det her bliver unødvendigt
         wordToGuess.setText("Ordet du skal gætte er: "+logik.getSynligtOrd());
 
         guessButton = findViewById(R.id.button);
@@ -54,9 +56,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         wordToGuess.setText("Ordet du skal gætte er: "+logik.getSynligtOrd());
         wrongLetterText.setText("Du har svaret forkert " + logik.getAntalForkerteBogstaver() + " gange og du har brugt bogstaverne: "+logik.getBrugteBogstaver());
 
+        if (logik.erSpilletVundet()){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            //dialog.setTitle("Title");
+            dialog.setMessage("Du gættede alle rigtigt hvilket betyder du vandt!");
+            dialog.show();
+            logik.nulstil();
+            iv.setImageResource(R.drawable.galge);
+            updateScreen();
+        }
+
         switch (logik.getAntalForkerteBogstaver()){
             case 0:
-
                 break;
             case 1:
                 iv.setImageResource(R.drawable.forkert1);
@@ -77,8 +88,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 iv.setImageResource(R.drawable.forkert6);
                 break;
             case 7:
-
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                //dialog.setTitle("Title");
+                dialog.setMessage("Du gættede forkert 7 gange hvilket betyder du tabte!");
+                dialog.show();
                 logik.nulstil();
+                iv.setImageResource(R.drawable.galge);
+                updateScreen();
+
                 break;
 
         }
