@@ -2,6 +2,8 @@ package com.example.galgeleg;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button guessButton;
     private EditText letterReciever;
     private ImageView iv;
+    private AlertDialog.Builder dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         letterReciever = findViewById(R.id.insertLetter);
 
         iv = findViewById(R.id.galge);
-        //iv.setImageResource(R.drawable.forkert1);
+
+        dialog = new AlertDialog.Builder(this);
+        dialog.setCancelable(false);
 
     }
 
@@ -57,13 +62,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         wrongLetterText.setText("Du har svaret forkert " + logik.getAntalForkerteBogstaver() + " gange og du har brugt bogstaverne: "+logik.getBrugteBogstaver());
 
         if (logik.erSpilletVundet()){
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            //dialog.setTitle("Title");
-            dialog.setMessage("Du gættede alle rigtigt hvilket betyder du vandt!");
+            dialog.setTitle("Du vandt!");
+            dialog.setMessage("Du gættede ordet: "+logik.getOrdet());
+            dialog.setPositiveButton("Nyt spil", new AlertDialog.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    logik.nulstil();
+                    updateScreen();
+                    iv.setImageResource(R.drawable.galge);
+                }
+            });
             dialog.show();
-            logik.nulstil();
-            iv.setImageResource(R.drawable.galge);
-            updateScreen();
         }
 
         switch (logik.getAntalForkerteBogstaver()){
@@ -88,13 +96,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 iv.setImageResource(R.drawable.forkert6);
                 break;
             case 7:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                //dialog.setTitle("Title");
-                dialog.setMessage("Du gættede forkert 7 gange hvilket betyder du tabte!");
+                dialog.setTitle("Du Tabte!");
+                dialog.setMessage("Ordet var: "+logik.getOrdet());
+                dialog.setPositiveButton("Prøv igen", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        logik.nulstil();
+                        updateScreen();
+                        iv.setImageResource(R.drawable.galge);
+                    }
+                });
                 dialog.show();
-                logik.nulstil();
-                iv.setImageResource(R.drawable.galge);
-                updateScreen();
 
                 break;
 
