@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class Game_act extends AppCompatActivity implements View.OnClickListener {
 
-    Galgelogik logik = new Galgelogik();
+    static Galgelogik logik = new Galgelogik();
     private TextView wrongLetterText, wordToGuess;
     private Button guessButton;
     private EditText letterReciever;
@@ -23,12 +23,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
 
         wrongLetterText = findViewById(R.id.wrongLetter);
         wordToGuess = findViewById(R.id.word);
-        //TODO Flyt updateScreen i bunden af onCreate så det her bliver unødvendigt
-        wordToGuess.setText("Ordet du skal gætte er: "+logik.getSynligtOrd());
 
         guessButton = findViewById(R.id.button);
         guessButton.setOnClickListener(this);
@@ -39,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dialog = new AlertDialog.Builder(this);
         dialog.setCancelable(false);
+
+        updateScreen();
 
     }
 
@@ -111,5 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+    }
+    public void reset(){
+        logik.nulstil();
     }
 }
