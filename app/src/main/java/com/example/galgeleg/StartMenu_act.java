@@ -3,16 +3,16 @@ package com.example.galgeleg;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class StartMenu_act extends AppCompatActivity implements View.OnClickListener {
-    private Button playButton, helpButton, resetButton;
-    private Game_act game = new Game_act();
-
-
+    private Button playButton, helpButton, resetButton, drButton;
+    private MyAsyncTask at = new MyAsyncTask();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +22,12 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
         playButton =findViewById(R.id.startGame);
         helpButton =findViewById(R.id.help);
         resetButton =findViewById(R.id.reset);
+        drButton =findViewById(R.id.DR);
 
         playButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
         resetButton.setOnClickListener(this);
+        drButton.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -41,11 +43,39 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
         }
 
         if (v==resetButton){
-            game.reset();
+            Game_act.logik.nulstil();
             Toast t = Toast.makeText(StartMenu_act.this, "Spillet blev nulstillet!", Toast.LENGTH_SHORT);
             t.setGravity(200,0, 20);
             t.show();
+        }
+        if (v==drButton) {
+            playButton.setClickable(false);
+            playButton.setText("Henter ord fra DR...");
+            new Handler().postDelayed(new Runnable() {
+                public void run()
+                {
+                    playButton.setClickable(true);
+                    playButton.setText("Start spillet");
+                }
+                }, 2000    //Could also just stop runnable when MyAsyncTask finishes by returning something in an onPostExecute() and constantly check for it in the runnable.
+            );
+            at.execute();
+            //drButton.setText("");
+            drButton.setVisibility(View.GONE);
+        }
+    }
 
+    private static class MyAsyncTask extends AsyncTask<Void,Void,String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                Game_act.logik.hentOrdFraDr();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return "Done";
         }
     }
 }
+

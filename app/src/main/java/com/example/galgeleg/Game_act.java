@@ -39,7 +39,6 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
         dialog.setCancelable(false);
 
         updateScreen();
-
     }
 
     @Override
@@ -63,7 +62,7 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
 
         if (logik.erSpilletVundet()){
             dialog.setTitle("Du vandt!");
-            dialog.setMessage("Du gættede ordet: "+logik.getOrdet());
+            dialog.setMessage("Du gættede ordet: "+logik.getOrdet()+" efter "+logik.getBrugteBogstaver().size()+" forsøg");
             dialog.setPositiveButton("Nyt spil", new AlertDialog.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
                     logik.nulstil();
@@ -108,11 +107,6 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
                 dialog.show();
 
                 break;
-
         }
-
-    }
-    public void reset(){
-        logik.nulstil();
     }
 }
