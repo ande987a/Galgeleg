@@ -4,7 +4,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +21,7 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
     private EditText letterReciever;
     private ImageView iv;
     private AlertDialog.Builder dialog;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
 
         dialog = new AlertDialog.Builder(this);
         dialog.setCancelable(false);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateScreen();
     }
@@ -70,6 +75,7 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
                     iv.setImageResource(R.drawable.galge);
                 }
             });
+            prefs.edit().putInt("wins", prefs.getInt("wins",0)+1).apply();
             dialog.show();
         }
 

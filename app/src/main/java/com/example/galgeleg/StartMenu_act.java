@@ -3,16 +3,23 @@ package com.example.galgeleg;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class StartMenu_act extends AppCompatActivity implements View.OnClickListener {
     private Button playButton, helpButton, resetButton, drButton;
+    private TextView winsView;
     private MyAsyncTask at = new MyAsyncTask();
+    private int totalWinsInt;
+    private String totalwins;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +31,21 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
         resetButton =findViewById(R.id.reset);
         drButton =findViewById(R.id.DR);
 
+        winsView = findViewById(R.id.wins);
+
         playButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
         resetButton.setOnClickListener(this);
         drButton.setOnClickListener(this);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        totalWinsInt =prefs.getInt("wins",0);
+        totalwins =Integer.toString(totalWinsInt);
+        winsView.setText(totalwins);
+
     }
 
+    @Override
     public void onClick(View v) {
 
         if (v==playButton){
@@ -60,9 +76,16 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
                 }, 2000    //Could also just stop runnable when MyAsyncTask finishes by returning something in an onPostExecute() and constantly check for it in the runnable.
             );
             at.execute();
-            //drButton.setText("");
             drButton.setVisibility(View.GONE);
         }
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        totalWinsInt =prefs.getInt("wins",0);
+        totalwins =Integer.toString(totalWinsInt);
+        winsView.setText(totalwins);
     }
 
     private static class MyAsyncTask extends AsyncTask<Void,Void,String> {
