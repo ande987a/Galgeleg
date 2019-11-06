@@ -10,11 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Help_act"></activity>
-        <activity android:name=".Game_act" />
+        <activity
+            android:name=".Game_act"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <activity android:name=".StartMenu_act">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
