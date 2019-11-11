@@ -16,7 +16,6 @@ import android.widget.Toast;
 public class StartMenu_act extends AppCompatActivity implements View.OnClickListener {
     private Button playButton, helpButton, resetButton, drButton;
     private TextView winsView;
-    private MyAsyncTask at = new MyAsyncTask();
     private int totalWinsInt;
     private String totalwins;
     private SharedPreferences prefs;
@@ -67,16 +66,27 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
         if (v==drButton) {
             playButton.setClickable(false);
             playButton.setText("Henter ord fra DR...");
-            new Handler().postDelayed(new Runnable() {
-                public void run()
-                {
+
+            class GetWordsFromDR extends AsyncTask {
+                @Override
+                protected String doInBackground(Object... arg0) {
+                    try {
+                        Game_act.logik.hentOrdFraDr();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return "finished";
+                }
+
+                @Override
+                protected void onPostExecute(Object result) {
+                    drButton.setVisibility(View.GONE);
                     playButton.setClickable(true);
                     playButton.setText("Start spillet");
                 }
-                }, 2000    //Could also just stop runnable when MyAsyncTask finishes by returning something in an onPostExecute() and constantly check for it in the runnable.
-            );
-            at.execute();
-            drButton.setVisibility(View.GONE);
+            }
+            new GetWordsFromDR().execute();
+
         }
     }
     @Override
@@ -88,17 +98,6 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
         winsView.setText(totalwins);
     }
 
-    private static class MyAsyncTask extends AsyncTask<Void,Void,String> {
 
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                Game_act.logik.hentOrdFraDr();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return "Done";
-        }
-    }
 }
 
