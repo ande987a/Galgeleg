@@ -4,9 +4,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +24,8 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
     private ImageView iv;
     private AlertDialog.Builder dialog;
     private SharedPreferences prefs;
+    private String name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +52,10 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
-        if(view==guessButton) {
+        if (view == guessButton) {
 
             String letter = letterReciever.getText().toString();
-            if (letter.length() != 1){
+            if (letter.length() != 1) {
                 letterReciever.setError("Indtast kun ét bogstav");
                 return;
             }
@@ -61,25 +65,33 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
 
         }
     }
-    private void updateScreen(){
-        wordToGuess.setText("Ordet du skal gætte er: "+logik.getSynligtOrd());
-        wrongLetterText.setText("Du har svaret forkert " + logik.getAntalForkerteBogstaver() + " gange og du har brugt bogstaverne: "+logik.getBrugteBogstaver());
 
-        if (logik.erSpilletVundet()){
+    private void updateScreen() {
+        wordToGuess.setText("Ordet du skal gætte er: " + logik.getSynligtOrd());
+        wrongLetterText.setText("Du har svaret forkert " + logik.getAntalForkerteBogstaver() + " gange og du har brugt bogstaverne: " + logik.getBrugteBogstaver());
+
+        if (logik.erSpilletVundet()) {
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            dialog.setView(input);
             dialog.setTitle("Du vandt!");
-            dialog.setMessage("Du gættede ordet: "+logik.getOrdet()+" efter "+logik.getBrugteBogstaver().size()+" forsøg");
-            dialog.setPositiveButton("Nyt spil", new AlertDialog.OnClickListener() {
+            dialog.setMessage("Du gættede ordet: " + logik.getOrdet() + " efter " + logik.getBrugteBogstaver().size() + " forsøg!\n\nIndtast navn: ");
+            dialog.setPositiveButton("OK", new AlertDialog.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
+                    name = input.getText().toString();
                     logik.nulstil();
                     updateScreen();
                     iv.setImageResource(R.drawable.galge);
+                    Intent winnerIntent = new Intent(Game_act.this, Winner_act.class);
+                    winnerIntent.putExtra("name", name);
+                    startActivity(winnerIntent);
                 }
             });
-            prefs.edit().putInt("wins", prefs.getInt("wins",0)+1).apply();
+            prefs.edit().putInt("wins", prefs.getInt("wins", 0) + 1).apply();
             dialog.show();
         }
 
-        switch (logik.getAntalForkerteBogstaver()){
+        switch (logik.getAntalForkerteBogstaver()) {
             case 0:
                 break;
             case 1:
@@ -102,12 +114,14 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
                 break;
             case 7:
                 dialog.setTitle("Du Tabte!");
-                dialog.setMessage("Ordet var: "+logik.getOrdet());
-                dialog.setPositiveButton("Prøv igen", new AlertDialog.OnClickListener() {
+                dialog.setMessage("Ordet var: " + logik.getOrdet());
+                dialog.setPositiveButton("OK", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                         logik.nulstil();
                         updateScreen();
                         iv.setImageResource(R.drawable.galge);
+                        Intent loserIntent = new Intent(Game_act.this, Loser_act.class);
+                        startActivity(loserIntent);
                     }
                 });
                 dialog.show();
