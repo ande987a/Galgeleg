@@ -3,10 +3,15 @@ package com.example.galgeleg;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.github.jinatonic.confetti.CommonConfetti;
 
 public class Winner_act extends AppCompatActivity implements View.OnClickListener{
 
@@ -19,8 +24,13 @@ public class Winner_act extends AppCompatActivity implements View.OnClickListene
 
         TextView playerName = findViewById(R.id.playerName);
 
+        Handler handler = new Handler();
+        Runnable confettiWait;
+
         goBackButton = findViewById(R.id.winnerGoBackButton);
         goBackButton.setOnClickListener(this);
+
+        final ViewGroup startMenuView = findViewById(R.id.container);
 
         String name;
         Bundle extras = getIntent().getExtras();
@@ -31,6 +41,14 @@ public class Winner_act extends AppCompatActivity implements View.OnClickListene
         }
 
         playerName.setText("Tillykke "+name+"!");
+
+        confettiWait = new Runnable() {
+            public void run() {
+                CommonConfetti.rainingConfetti(startMenuView, new int[] { Color.BLACK, Color.RED, Color.GREEN })
+                        .infinite();
+            }
+        };
+        handler.postDelayed(confettiWait, 500);
     }
 
     @Override
