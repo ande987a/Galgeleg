@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -31,6 +32,7 @@ public class Winner_act extends AppCompatActivity implements View.OnClickListene
         goBackButton.setOnClickListener(this);
 
         final ViewGroup startMenuView = findViewById(R.id.container);
+        final MediaPlayer winnerSound = MediaPlayer.create(this, R.raw.winner_sound);
 
         String name;
         Bundle extras = getIntent().getExtras();
@@ -49,6 +51,8 @@ public class Winner_act extends AppCompatActivity implements View.OnClickListene
             }
         };
         handler.postDelayed(confettiWait, 500);
+
+        winnerSound.start();
     }
 
     @Override
