@@ -41,7 +41,12 @@ public class Highscore_act extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         gson = new Gson();
         jsonText = prefs.getString("nameList",null);
-        names = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
+        if (jsonText == null){
+            names = new ArrayList<String>();
+            names.add("");
+        }else{
+            names = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
+        }
     }
 
     
@@ -75,8 +80,13 @@ public class Highscore_act extends AppCompatActivity {
         public void onBindViewHolder(RecyclerView.ViewHolder vh0, int position) {
             if (getItemViewType(position)==0) {
                 ListeelemViewholder vh = (ListeelemViewholder) vh0;
-                vh.highscoreName.setText("Navn: "+names.get(position));
-                vh.highscoreWins.setText("Antal vundne spil: " + prefs.getInt(names.get(position),0));
+                if (!names.get(position).equals("")){
+                    vh.highscoreName.setText("Navn: "+names.get(position));
+                    vh.highscoreWins.setText("Antal vundne spil: " + prefs.getInt(names.get(position),0));
+                }else{
+                    vh.highscoreName.setText("Ingen spillere på high score listen endnu");
+                    vh.highscoreWins.setText("");
+                }
             } else {
                 TextView tv = vh0.itemView.findViewById(android.R.id.text1);
                 tv.setTextSize(36);
