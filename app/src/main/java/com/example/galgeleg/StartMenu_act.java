@@ -3,44 +3,31 @@ package com.example.galgeleg;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class StartMenu_act extends AppCompatActivity implements View.OnClickListener {
-    private Button playButton, helpButton, resetButton, drButton;
-    private TextView winsView;
-    private int totalWinsInt;
-    private String totalwins;
-    private SharedPreferences prefs;
+    private Button playButton, helpButton, resetButton, drButton, highscoreButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_menu_akt);
+        setContentView(R.layout.activity_start_menu_act);
 
-        playButton =findViewById(R.id.startGame);
-        helpButton =findViewById(R.id.help);
-        resetButton =findViewById(R.id.reset);
-        drButton =findViewById(R.id.DR);
-
-        winsView = findViewById(R.id.wins);
+        playButton = findViewById(R.id.startGame);
+        helpButton = findViewById(R.id.help);
+        resetButton = findViewById(R.id.reset);
+        drButton = findViewById(R.id.DR);
+        highscoreButton = findViewById(R.id.highscore);
 
         playButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
         resetButton.setOnClickListener(this);
         drButton.setOnClickListener(this);
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        totalWinsInt =prefs.getInt("wins",0);
-        totalwins =Integer.toString(totalWinsInt);
-        winsView.setText(totalwins);
-
+        highscoreButton.setOnClickListener(this);
     }
 
     @Override
@@ -53,6 +40,11 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
 
         if (v==helpButton){
             Intent i = new Intent(this, Help_act.class);
+            startActivity(i);
+        }
+
+        if (v==highscoreButton){
+            Intent i = new Intent(this, Highscore_act.class);
             startActivity(i);
         }
 
@@ -88,15 +80,5 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
 
         }
     }
-    @Override
-    public void onResume(){
-        super.onResume();
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        totalWinsInt =prefs.getInt("wins",0);
-        totalwins =Integer.toString(totalWinsInt);
-        winsView.setText(totalwins);
-    }
-
-
 }
 

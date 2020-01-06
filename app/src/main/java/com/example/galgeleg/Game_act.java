@@ -14,6 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Game_act extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,7 +35,7 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_game_act);
 
         wrongLetterText = findViewById(R.id.wrongLetter);
         wordToGuess = findViewById(R.id.word);
@@ -62,7 +67,6 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
             logik.gætBogstav(letter);
             letterReciever.setText("");
             updateScreen();
-
         }
     }
 
@@ -79,6 +83,25 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
             dialog.setPositiveButton("OK", new AlertDialog.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
                     name = input.getText().toString();
+
+                    // add the chosen player name to a list consisting of all other player names
+                    Gson gson = new Gson();
+                    String jsonText = prefs.getString("nameList",null);
+                    if (jsonText!=null){
+                        List<String> nameList = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
+                        if (!nameList.contains(name)){ // should probably use HashSet instead of list...
+                            nameList.add(name);
+                            String newJsonText = gson.toJson(nameList);
+                            prefs.edit().putString("nameList", newJsonText).apply();
+                        }
+                    }else {
+                        List<String> nameList = new ArrayList<String>();
+                        nameList.add(name);
+                        String newJsonText = gson.toJson(nameList);
+                        prefs.edit().putString("nameList", newJsonText).apply();
+                    }
+                    prefs.edit().putInt(name, prefs.getInt(name, 0) + 1).apply();
+
                     logik.nulstil();
                     updateScreen();
                     iv.setImageResource(R.drawable.galge);
@@ -87,7 +110,6 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
                     startActivity(winnerIntent);
                 }
             });
-            prefs.edit().putInt("wins", prefs.getInt("wins", 0) + 1).apply();
             dialog.show();
         }
 

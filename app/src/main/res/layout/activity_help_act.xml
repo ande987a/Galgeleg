@@ -8,10 +8,10 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="284dp"
-        android:layout_height="123dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Galgespil går ud på er at man skal gætte et ord. Man skal gætte ét bogstav af gangen og hvis man svarer forkert 7 gange taber man. Hvis man derimod gætter ordet inden man får 7 forkerte, vinder man spillet."
         app:layout_constraintEnd_toEndOf="parent"
