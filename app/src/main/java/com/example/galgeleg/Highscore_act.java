@@ -19,19 +19,20 @@ import java.util.Arrays;
 public class Highscore_act extends AppCompatActivity {
 
     private SharedPreferences prefs;
-    
-
-    RecyclerView recyclerView;
-    String jsonText;
-    ArrayList<String> names;
-    Gson gson;
+    private ArrayList<String> names;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getInt("theme", 0) == 0) {
+            setTheme(R.style.AppTheme);
+        } else {
+            setTheme(R.style.AppThemeDark);
+        }
         setContentView(R.layout.activity_highscore_act);
 
-        recyclerView = new RecyclerView(this);
+        RecyclerView recyclerView = new RecyclerView(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -39,32 +40,33 @@ public class Highscore_act extends AppCompatActivity {
         setContentView(recyclerView);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        gson = new Gson();
-        jsonText = prefs.getString("nameList",null);
-        if (jsonText == null){
+        Gson gson = new Gson();
+        String jsonText = prefs.getString("nameList", null);
+        if (jsonText == null) {
             names = new ArrayList<String>();
             names.add("");
-        }else{
+        } else {
             names = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
         }
     }
 
-    
+
     RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
         @Override
-        public int getItemCount()  {
+        public int getItemCount() {
             return names.size();
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (names.get(position).startsWith("*")) return 1; //TODO Make it usefull or delete, cleanup needed
+            if (names.get(position).startsWith("*"))
+                return 1; //TODO Make it usefull or delete, cleanup needed
             else return 0;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType==0) {
+            if (viewType == 0) {
                 View itemView = getLayoutInflater().inflate(R.layout.activity_highscore_act, parent, false);
                 ListeelemViewholder vh = new ListeelemViewholder(itemView);
                 vh.highscoreName = itemView.findViewById(R.id.playerHighscoreName);
@@ -72,18 +74,19 @@ public class Highscore_act extends AppCompatActivity {
                 return vh;
             } else {
                 View itemView = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
-                return new RecyclerView.ViewHolder(itemView) {};
+                return new RecyclerView.ViewHolder(itemView) {
+                };
             }
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder vh0, int position) {
-            if (getItemViewType(position)==0) {
+            if (getItemViewType(position) == 0) {
                 ListeelemViewholder vh = (ListeelemViewholder) vh0;
-                if (!names.get(position).equals("")){
-                    vh.highscoreName.setText("Navn: "+names.get(position));
-                    vh.highscoreWins.setText("Antal vundne spil: " + prefs.getInt(names.get(position),0));
-                }else{
+                if (!names.get(position).equals("")) {
+                    vh.highscoreName.setText("Navn: " + names.get(position));
+                    vh.highscoreWins.setText("Spil vundet: " + prefs.getInt(names.get(position), 0));
+                } else {
                     vh.highscoreName.setText("Ingen spillere på high score listen endnu");
                     vh.highscoreWins.setText("");
                 }

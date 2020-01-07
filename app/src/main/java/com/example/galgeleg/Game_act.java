@@ -35,6 +35,12 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getInt("theme", 0) == 0) {
+            setTheme(R.style.AppTheme);
+        } else {
+            setTheme(R.style.AppThemeDark);
+        }
         setContentView(R.layout.activity_game_act);
 
         wrongLetterText = findViewById(R.id.wrongLetter);
@@ -49,8 +55,6 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
 
         dialog = new AlertDialog.Builder(this);
         dialog.setCancelable(false);
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateScreen();
     }

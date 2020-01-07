@@ -57,6 +57,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/help" />
 
+    <Spinner
+        android:id="@+id/themeSelector"
+        android:layout_width="160dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DR" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
