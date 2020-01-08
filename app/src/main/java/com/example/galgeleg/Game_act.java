@@ -93,7 +93,7 @@ public class Game_act extends AppCompatActivity implements View.OnClickListener 
                     String jsonText = prefs.getString("nameList",null);
                     if (jsonText!=null){
                         List<String> nameList = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
-                        if (!nameList.contains(name)){ // should probably use HashSet instead of list...
+                        if (!nameList.contains(name)){
                             nameList.add(name);
                             String newJsonText = gson.toJson(nameList);
                             prefs.edit().putString("nameList", newJsonText).apply();

@@ -1,9 +1,5 @@
 package com.example.galgeleg;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,20 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Highscore_act extends AppCompatActivity {
 
-    private SharedPreferences prefs;
     private ArrayList<String> names;
+    private ArrayList<Player> players;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getInt("theme", 0) == 0) {
             setTheme(R.style.AppTheme);
         } else {
@@ -47,64 +48,39 @@ public class Highscore_act extends AppCompatActivity {
             names.add("");
         } else {
             names = new ArrayList<String>(Arrays.asList(gson.fromJson(jsonText, String[].class)));
+
+            players = new ArrayList<Player>();
+            for (String name : names) {
+                players.add(new Player(prefs.getInt(name, 0), name));
+            }
+            Collections.sort(players, new SortByWins());
         }
     }
 
-
-    RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
+    private RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
         @Override
         public int getItemCount() {
             return names.size();
         }
 
         @Override
-        public int getItemViewType(int position) {
-            if (names.get(position).startsWith("*"))
-                return 1; //TODO Make it usefull or delete, cleanup needed
-            else return 0;
-        }
-
-        @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType == 0) {
-                View itemView = getLayoutInflater().inflate(R.layout.activity_highscore_act, parent, false);
-                ListeelemViewholder vh = new ListeelemViewholder(itemView);
-                vh.highscoreName = itemView.findViewById(R.id.playerHighscoreName);
-                vh.highscoreWins = itemView.findViewById(R.id.playerHighscoreCount);
-                return vh;
-            } else {
-                View itemView = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
-                return new RecyclerView.ViewHolder(itemView) {
-                };
-            }
+            View itemView = getLayoutInflater().inflate(R.layout.activity_highscore_act, parent, false);
+            return new RecyclerView.ViewHolder(itemView) {
+            };
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder vh0, int position) {
-            if (getItemViewType(position) == 0) {
-                ListeelemViewholder vh = (ListeelemViewholder) vh0;
-                if (!names.get(position).equals("")) {
-                    vh.highscoreName.setText("Navn: " + names.get(position));
-                    vh.highscoreWins.setText("Spil vundet: " + prefs.getInt(names.get(position), 0));
-                } else {
-                    vh.highscoreName.setText("Ingen spillere på high score listen endnu");
-                    vh.highscoreWins.setText("");
-                }
+        public void onBindViewHolder(RecyclerView.ViewHolder vh, int position) {
+            TextView highscoreName = vh.itemView.findViewById(R.id.playerHighscoreName);
+            TextView highscoreWins = vh.itemView.findViewById(R.id.playerHighscoreCount);
+            if (!names.get(position).equals("")) {
+                highscoreName.setText("Navn: " + players.get(position).getName());
+                highscoreWins.setText("Spil vundet: " + players.get(position).getWins());
             } else {
-                TextView tv = vh0.itemView.findViewById(android.R.id.text1);
-                tv.setTextSize(36);
-                tv.setText(names.get(position));
+                highscoreName.setText("Ingen spillere på high score listen endnu");
+                highscoreWins.setText("");
             }
-
         }
     };
-
-    class ListeelemViewholder extends RecyclerView.ViewHolder {
-        TextView highscoreName;
-        TextView highscoreWins;
-
-        public ListeelemViewholder(View itemView) {
-            super(itemView);
-        }
-    }
 }
