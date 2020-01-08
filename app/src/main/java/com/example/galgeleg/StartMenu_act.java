@@ -96,7 +96,6 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
                 }
             }
             new GetWordsFromDR().execute();
-
         }
     }
 
@@ -122,7 +121,6 @@ public class StartMenu_act extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }
 
