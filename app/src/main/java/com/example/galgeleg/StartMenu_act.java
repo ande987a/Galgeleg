@@ -1,18 +1,18 @@
 package com.example.galgeleg;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 public class StartMenu_act extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private Button playButton, helpButton, resetButton, drButton, highscoreButton;
